@@ -1,4 +1,4 @@
-var wall_proxy = "SOCKS5 127.0.0.1:1080;SOCKS5 127.0.0.1:10800;SOCKS5 127.0.0.1:7890;SOCKS5 127.0.0.1:7891;";
+var wall_proxy = "PROXY 127.0.0.1:1081; SOCKS5 127.0.0.1:1081; DIRECT;";
 var nowall_proxy = "DIRECT;";
 var direct = "DIRECT;";
 var ip_proxy = "DIRECT;";
@@ -10336,6 +10336,12 @@ var white_domains = {
 }
 };
 
+var black_domains = {
+  "com":{
+    "aod-ssl.itunes.apple":1
+  }
+};
+
 var subnetIpRangeList = [
 0,1,
 167772160,184549376,	//10.0.0.0/8
@@ -10418,6 +10424,9 @@ function FindProxyForURL(url, host) {
 	}
 	if ( check_ipv4(host) === true ) {
 		return getProxyFromDirectIP(host);
+	}
+	if ( isInDomains(black_domains, host) === true ) {
+		return wall_proxy;
 	}
 	if ( isInDomains(white_domains, host) === true ) {
 		return nowall_proxy;
