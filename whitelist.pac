@@ -10383,17 +10383,19 @@ function getProxyFromDirectIP(strIp) {
 	}
 	return ip_proxy;
 }
-function isInDomains(domain_dict, host) {
+function isInDomains(domain_dict, host, isWhite = true) {
 	var suffix;
 	var pos1 = host.lastIndexOf('.');
 
 	suffix = host.substring(pos1 + 1);
-	if (suffix=="cn"||suffix=="nd"||suffix=="localhost"||
-	    suffix=="local"||suffix=="dev"||suffix=="test"||
+  if (isWhite) {
+    if (suffix=="cn"||suffix=="nd"||suffix=="localhost"||
+	    suffix=="local"||suffix=="test"||
 	    suffix=="onion"||suffix=="exit"||suffix=="bitnet"||
 	    suffix=="uucp"||suffix=="example"||suffix=="invalid") {
-		return true;
-	}
+      return true;
+    }
+  }
 	var domains = domain_dict[suffix];
 	if ( domains === undefined ) {
 		return false;
@@ -10425,9 +10427,9 @@ function FindProxyForURL(url, host) {
 	if ( check_ipv4(host) === true ) {
 		return getProxyFromDirectIP(host);
 	}
-	if ( isInDomains(black_domains, host) === true ) {
-		return wall_proxy;
-	}
+	// if ( isInDomains(black_domains, host, false) === true ) {
+	// 	return wall_proxy;
+	// }
 	if ( isInDomains(white_domains, host) === true ) {
 		return nowall_proxy;
 	}
